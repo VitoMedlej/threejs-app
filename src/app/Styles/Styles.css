@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-title {
+  color: red;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
+}/*# sourceMappingURL=Styles.css.map */

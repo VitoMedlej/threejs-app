@@ -1,95 +1,70 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import React, { useRef, useEffect } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+const ThreeScene: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+  useEffect(() => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load('/materials/moon.jpeg');
+    camera.position.z = 1;
+    const gridHelper = new THREE.GridHelper(1)
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+    const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+    scene.add(ambientLight, gridHelper);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, .6);
+directionalLight.position.set(1, .1, 1);
+
+
+
+   
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // document.body.appendChild(renderer.domElement);
+    // containerRef?.current?.appendChild(renderer.domElement);
+    if (containerRef?.current?.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild);
+    }
+    
+    // Append the new canvas
+    containerRef?.current?.appendChild(renderer.domElement);
+    const geometry = new THREE.SphereGeometry(.25, 64, 64);
+
+
+    const material = new THREE.MeshStandardMaterial({ wireframe:false, map: texture  });
+    // const backgroundTexture = textureLoader.load('/materials/space.jpg');
+    // scene.background = backgroundTexture;
+
+
+
+    const cube = new THREE.Mesh(geometry, material);
+  
+    const controls = new OrbitControls(camera, renderer.domElement);
+    scene.add(cube, directionalLight);
+    // cube.position.z = 1;
+    const animate = function () {
+      requestAnimationFrame(animate);
+      // cube.rotation.x += 0.001;
+      cube.rotation.y += 0.003;
+      cube.rotation.z += 0.003;
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    
+    animate();
+  }, []);
+  
+  return <div ref={containerRef} />;
+};
+
+export default ThreeScene;
