@@ -2,20 +2,20 @@
 import React, {useRef, useEffect} from 'react';
 import * as THREE from 'three';
 import {PointerLockControls} from 'three/examples/jsm/controls/PointerLockControls.js';
+import MobileButtons from '../MobileButtons/MobileButtons';
 
 const ThreeScene : React.FC = () => {
     const canvasRef = useRef < HTMLCanvasElement > (null);
-
     useEffect(() => {
         let scene : THREE.Scene,
             camera : THREE.PerspectiveCamera,
             renderer : THREE.WebGLRenderer,
             controls : PointerLockControls;
 
-
+         
 
         const velocity = new THREE.Vector3();
-        const onKeyDown = (event : KeyboardEvent) => {
+        const onKeyDown = (event : KeyboardEvent | any) => {
 
             switch (event.key) {
                     // case 'w':   controls.moveForward(1);   break; case 'a':
@@ -35,7 +35,7 @@ const ThreeScene : React.FC = () => {
                     break;
             }
         };
-        const onKeyUp = (event : KeyboardEvent) => {
+        const onKeyUp = (event : KeyboardEvent | any) => {
             switch (event.key) {
                 case 'w':
                 case 's':
@@ -48,7 +48,26 @@ const ThreeScene : React.FC = () => {
             }
         };
 
+
+       
+
+
         const init = () => {
+
+
+            const buttons : any = document.querySelectorAll('.mobile-button')
+            console.log('buttons: ', buttons);
+
+
+            buttons.forEach((button : any) => {
+              button.addEventListener('touchstart', (e:any)=>{onKeyDown({key:`${e.target?.id}`})})
+              button.addEventListener('touchend', (e:any)=>{onKeyUp({key:`${e.target?.id}`})})
+            })
+    
+
+
+
+
             // Scene
             scene = new THREE.Scene();
 
@@ -179,7 +198,13 @@ const ThreeScene : React.FC = () => {
             canvasRef.current !.addEventListener('click', () => {
                 controls.lock();
             });
+
+
+            
             scene.add(controls.getObject());
+
+
+
 
             // Event listeners
             document.addEventListener('keydown', onKeyDown);
@@ -223,7 +248,10 @@ const ThreeScene : React.FC = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef}/>;
+    return <>
+    <MobileButtons/>
+     <canvas ref={canvasRef}/>;
+    </>
 };
 
 export default ThreeScene;

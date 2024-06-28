@@ -1,0 +1,21 @@
+"use client"
+import React, { useContext, useEffect } from 'react'
+
+const MobileButtons = () => {
+
+    
+  return (
+    <div style={{ position: 'fixed', bottom: '10px', left: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '75px' }}>
+        <button id='w' className='mobile-button' style={{ fontSize:'1em', marginBottom: '5px', width: '30px', height: '30px' }}>W</button>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+          <button id='a' className='mobile-button' style={{ fontSize:'1em', width: '30px', height: '30px' }}>A</button>
+          <button id='d' className='mobile-button' style={{ fontSize:'1em', width: '30px', height: '30px' }}>D</button>
+        </div>
+        <button id='s' className='mobile-button' style={{ fontSize:'1em', marginTop: '5px', width: '30px', height: '30px' }}>S</button>
+      </div>
+    </div>
+  )
+}
+
+export default MobileButtons

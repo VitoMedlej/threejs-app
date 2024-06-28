@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../app/Styles/Styles.css'
+import MobileButtons from './MobileButtons/MobileButtons'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -15,16 +16,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body style={{position:'relative', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}} className={inter.className}>
         <div className='main-title'>
-<h1  style={{textAlign:'center'}}>
-hello world
-</h1>
+          <h1 style={{textAlign:'center'}}>
+            hello world
+          </h1>
         </div>
         <>
-        {children}
+          {children}
         </>
-        </body>
+      </body>
     </html>
   )
 }
