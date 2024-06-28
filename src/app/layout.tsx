@@ -18,7 +18,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className='main-title'>
 <h1  style={{textAlign:'center'}}>
-        Vito Medlej
+hello world
 </h1>
         </div>
         <>

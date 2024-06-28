@@ -13,16 +13,15 @@ const ThreeScene: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('/materials/moon.jpeg');
+    const texture = textureLoader.load('/materials/ane.jpg');
     camera.position.z = 1;
     const gridHelper = new THREE.GridHelper(1)
-
     const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
     scene.add(ambientLight, gridHelper);
 
 
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, .6);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(1, .1, 1);
 
 
@@ -55,8 +54,8 @@ directionalLight.position.set(1, .1, 1);
     const animate = function () {
       requestAnimationFrame(animate);
       // cube.rotation.x += 0.001;
-      cube.rotation.y += 0.003;
-      cube.rotation.z += 0.003;
+      cube.rotation.y += 0.01;
+      cube.rotation.z += 0.01;
       controls.update();
       renderer.render(scene, camera);
     };
