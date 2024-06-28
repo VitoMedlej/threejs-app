@@ -12,7 +12,6 @@ const ThreeScene : React.FC = () => {
             renderer : THREE.WebGLRenderer,
             controls : PointerLockControls;
 
-         
 
         const velocity = new THREE.Vector3();
         const onKeyDown = (event : KeyboardEvent | any) => {
@@ -213,7 +212,7 @@ const ThreeScene : React.FC = () => {
            
 
 
-         
+            
             // Animation loop
             const animate = () => {
               requestAnimationFrame(animate);
