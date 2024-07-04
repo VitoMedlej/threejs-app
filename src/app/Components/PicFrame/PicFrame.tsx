@@ -2,7 +2,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import * as THREE from 'three';
 
-const PictureFrame = forwardRef((props, ref) => {
+const PictureFrame = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     createPictureFrame({textureURL  , frameSize  , pictureSize  , backgroundSize, location } : any) {
       const textureLoader = new THREE.TextureLoader();
@@ -66,6 +66,7 @@ const PictureFrame = forwardRef((props, ref) => {
       return pictureFrameGroup;
     }
   }));
+  PictureFrame.displayName = 'PictureFrame';
 
   return null;
 });
