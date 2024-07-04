@@ -1,69 +1,92 @@
-"use client"
+"use client";
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
+import PictureFrame from './Components/PicFrame/PicFrame';
 
 const ThreeScene: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-
+  const pictureFrameRef : any = useRef();
   useEffect(() => {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('/materials/ane.jpg');
-    camera.position.z = 1;
-    const gridHelper = new THREE.GridHelper(1)
-    const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
-    scene.add(ambientLight, gridHelper);
-
-
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(1, .1, 1);
-
-
-
-   
-
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 5000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // document.body.appendChild(renderer.domElement);
-    // containerRef?.current?.appendChild(renderer.domElement);
-    if (containerRef?.current?.firstChild) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (containerRef.current?.firstChild) {
       containerRef.current.removeChild(containerRef.current.firstChild);
     }
+    containerRef.current?.appendChild(renderer.domElement);
+
+    camera.position.set(0, 0, 5);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight('white', 1);
+    scene.add(ambientLight);
+
+    const spotLight = new THREE.SpotLight('white', 0);
+    spotLight.position.set(0, 2, 2);
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 2048;
+    spotLight.shadow.mapSize.height = 2048;
+    spotLight.shadow.camera.near = 0.5;
+    spotLight.shadow.camera.far = 10;
+    spotLight.shadow.camera.fov = 30;
+    scene.add(spotLight);
+
+    const helper = new THREE.CameraHelper(spotLight.shadow.camera);
+    scene.add(helper);
+
+    // Skybox
+    const textureLoader = new THREE.TextureLoader();
+    const skyTexture = textureLoader.load('/materials/skye.jpg', () => {
+      const materials = [
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+        new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide }),
+      ];
+
+      const skyBoxGeometry = new THREE.BoxGeometry(5000, 5000, 5000);
+      const skyBox = new THREE.Mesh(skyBoxGeometry, materials);
+      scene.add(skyBox);
+    });
+
+    // Wall
+    const wallGeometry = new THREE.PlaneGeometry(5, 5);
+    const wallMaterial = new THREE.MeshStandardMaterial({ color: 'white' });
+    const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+    wall.position.z = -0.1;
+    wall.receiveShadow = true;
     
-    // Append the new canvas
-    containerRef?.current?.appendChild(renderer.domElement);
-    const geometry = new THREE.SphereGeometry(.25, 64, 64);
-
-
-    const material = new THREE.MeshStandardMaterial({ wireframe:false, map: texture  });
-    // const backgroundTexture = textureLoader.load('/materials/space.jpg');
-    // scene.background = backgroundTexture;
-
-
-
-    const cube = new THREE.Mesh(geometry, material);
-  
+    
+    // Add the group to the scene
+      const pictureFrame = pictureFrameRef && pictureFrameRef?.current?.createPictureFrame('https://th.bing.com/th/id/R.6641d892daaa187a726aacefd32f8420?rik=ZUW%2fOeCuvEWmKg&pid=ImgRaw&r=0');
+      console.log('pictureFrame: ', pictureFrame);
+      
+      
+      scene.add(wall,pictureFrame);
+    // Orbit controls
     const controls = new OrbitControls(camera, renderer.domElement);
-    scene.add(cube, directionalLight);
-    // cube.position.z = 1;
+
     const animate = function () {
       requestAnimationFrame(animate);
-      // cube.rotation.x += 0.001;
-      cube.rotation.y += 0.01;
-      cube.rotation.z += 0.01;
       controls.update();
       renderer.render(scene, camera);
     };
-    
+
     animate();
   }, []);
-  
-  return <div ref={containerRef} />;
+
+  return <>
+ 
+   <PictureFrame ref={pictureFrameRef} />
+  <div ref={containerRef} />;
+  </>
 };
 
 export default ThreeScene;
