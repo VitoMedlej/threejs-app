@@ -66,9 +66,9 @@ const PictureFrame = React.forwardRef((props, ref) => {
       return pictureFrameGroup;
     }
   }));
-  PictureFrame.displayName = 'PictureFrame';
-
+  
   return null;
 });
+PictureFrame.displayName = 'PictureFrame';
 
 export default PictureFrame;
